@@ -15,6 +15,12 @@ namespace NReco.Test
 {
     public class MovieRecord
     {
+        public MovieRecord(int movieId, string title)
+        {
+            this.movieId = movieId;
+            this.title = title;
+        }
+
         public int movieId { get; set; }
         public string title { get; set; }
     }
@@ -170,8 +176,21 @@ namespace NReco.Test
                     string predictionMovieIdInput = Console.ReadLine();
                     if (int.TryParse(predictionMovieIdInput, out int predictionMovieIdParsed))
                     {
-                        //Todo: Testen, ob movieId in datenbank vorhanden ist
-                        predictionMovieId = predictionMovieIdParsed;
+                        bool movieIdFound = false;
+                        foreach (MovieRecord movie in movies)
+                        {
+                            if (movie.movieId == predictionMovieIdParsed)
+                            {
+                                predictionMovieId = predictionMovieIdParsed;
+                                movieIdFound = true;
+                                break;
+                            }
+                        }
+                        if (!movieIdFound)
+                        {
+                            Console.WriteLine("Error: movieId existiert nicht");
+                            Console.WriteLine("Es wird eine Prediction für die zuletzt eingegebene Movie Id " + predictionMovieId + " berechnet.");
+                        }
                     }
                     else
                     {
@@ -188,7 +207,10 @@ namespace NReco.Test
                 }
                 else if (input == "MADD")
                 {
-                    //Todo: Film zur Filmliste für Prediction hinzufügen
+                    Console.WriteLine("Wie heißt der Film, der hinzugefügt werden soll?");
+                    string title = Console.ReadLine();
+                    int movieId = movies.Last().movieId++;
+                    movies.Add(new MovieRecord(movieId, title));
                 }
                 else if (input == "UCLEAR")
                 {
@@ -196,7 +218,7 @@ namespace NReco.Test
                 }
                 else if (input == "MCLEAR")
                 {
-                    //Todo: Filmliste leeren
+                    movies.Clear();
                 }
             }
 
